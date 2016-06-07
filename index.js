@@ -1,6 +1,6 @@
 var base65536 = require('base65536');
-var lzma = require('lzma');
 var requestify = require('requestify');
+var LZString = require('lz-string');
 
 var bool_array = new Array(32);
 var id_array = new Array(32);
@@ -21,12 +21,13 @@ function printArray() {
 
 function process_ids() {
     var raw_id_string = id_array.join('');
-    console.log(raw_id_string);
     raw_id_string = raw_id_string.replace(/-/g, "");
-    var compressed = lzma.compress(raw_id_string);
-    console.log(compressed.join(''));
-    compressed = compressed.replace(" ", "");
-    console.log("Compressed ID: " + compressed);
+    console.log("Length of string is " + raw_id_string.length);
+    console.log(raw_id_string);
+    var buf = new Buffer(raw_id_string);
+    var minified = base65536.encode(buf);
+    console.log("Minified length is " + minified.length);
+    console.log(minified);
 }
 
 var count = 0;
