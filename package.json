@@ -1,0 +1,20 @@
+{
+  "name": "iaas",
+  "version": "1.0.0",
+  "description": "Boolean as a Service as an Integer as a Service",
+  "main": "index.js",
+  "dependencies": {
+    "base65536": "^1.0.3",
+    "lz-string": "^1.4.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/kilenaitor/iaas"
+  },
+  "author": "Kyle Minshall & Mark De Ruyter",
+  "license": "MIT"
+}
