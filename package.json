@@ -6,7 +6,10 @@
   "dependencies": {
     "base65536": "^1.0.3",
     "lz-string": "^1.4.4",
-    "request": "^2.72.0"
+    "lzma": "^2.3.2",
+    "querystring": "^0.2.0",
+    "request": "^2.72.0",
+    "requestify": "^0.1.17"
   },
   "devDependencies": {},
   "scripts": {

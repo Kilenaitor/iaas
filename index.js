@@ -1,9 +1,11 @@
 var base65536 = require('base65536');
-var lzstring  = require('lz-string');
-var request   = require('request');
+var lzma = require('lzma');
+var requestify = require('requestify');
 
 var bool_array = new Array(32);
 var id_array = new Array(32);
+var raw_binary = "";
+var int_val;
 
 // Run everything
 run_all();
@@ -12,8 +14,20 @@ run_all();
 // All the helpers
 function printArray() {
     array_to_int();
+    int_val = parseInt(raw_binary, 2);
+    console.log("Integer value: " + int_val);
+    process_ids();
 }
 
+function process_ids() {
+    var raw_id_string = id_array.join('');
+    console.log(raw_id_string);
+    raw_id_string = raw_id_string.replace(/-/g, "");
+    var compressed = lzma.compress(raw_id_string);
+    console.log(compressed.join(''));
+    compressed = compressed.replace(" ", "");
+    console.log("Compressed ID: " + compressed);
+}
 
 var count = 0;
 function run_all() {
@@ -31,16 +45,25 @@ function run_all() {
 
 function request_bool(index) {
     return new Promise(function(resolve, reject) {
-        var ran_val = Math.random()<.5
-        ran_val = ran_val ? "true" : "false";
-        request.post({ url: 'https://api.booleans.io', data: { 'val' : ran_val }}, function(err, httpResponse, body) {
-            if(err) {
-                reject(Error("Unable to get new BaaS"));
-            }
-            var response = JSON.parse(body);
-            bool_array[index] = response.val;
-            id_array[index] = response.id;
-            resolve(response);
+        var ran_val = Math.random()<.5;
+        requestify.request('https://api.booleans.io', {
+            method: 'POST',
+            body: {
+                val: ran_val
+            },
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            dataType: 'json'
+        })
+        .then(function(response) {
+            var body = response.getBody();
+            bool_array[index] = body.val;
+            id_array[index] = body.id;
+            resolve("Success!");
+        })
+        .fail(function(error) {
+            reject("Error getting boolean. " + error);
         });
     });
 }
@@ -48,13 +71,14 @@ function request_bool(index) {
 
 function array_to_int() {
     var output = "";
-    for(var bool in bool_array) {
-        if(!bool) {
+    for(var index in bool_array) {
+        if(bool_array[index]) {
             output = "1" + output;
         } else {
             output = "0" + output;
         }
     }
-    console.log(output);
+    raw_binary = output;
+    console.log("Assembled binary val: " + output);
 }
 
